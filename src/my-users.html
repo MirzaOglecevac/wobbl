@@ -1,0 +1,405 @@
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/paper-search/paper-search-panel.html">
+<link rel="import" href="../bower_components/paper-search/paper-search.html">
+<link rel="import" href="../bower_components/paper-search/paper-search-bar.html">
+<link rel="import" href="../bower_components/iron-scroll-threshold/iron-scroll-threshold.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/paper-progress/paper-progress.html">
+<link rel="import" href="filtermenu-styles.html">
+
+
+<dom-module id="my-users">
+
+  <template>
+
+    <style include="filtermenu-styles">
+
+    :host {
+      display: block;
+      padding: 10px;
+    }
+
+
+	  .card {
+  		width: 96%;
+  		padding: 2%;
+  		margin: 0;
+  		background-color: transparent;
+		}
+
+
+  	 #rightMenu {
+    	 width: 10%;
+    	 min-width: 150px !important;
+    	 height: 100%;
+    	 min-height: 700px;
+    	 padding-top: 20px;
+    	 background-color: #FAFAFA;
+    	 color: #444;
+    	 position: fixed;
+    	 top: 52px;
+    	 right: 10px;
+       box-shadow: 10px 0 0 0 #fafafa;
+  	 }
+
+
+  	#rightMenu p {
+  		text-indent: 5%;
+  		padding: 5px;
+  		margin: 0;
+      cursor: pointer;
+      color: #444;
+  	}
+
+
+  	#filter {
+  		font-size: 14px;
+  	}
+
+
+  	paper-search-panel{
+  		width: 73.4%;
+      min-width: 372px;
+  		box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+      margin: 0 auto;
+      background-color: #666;
+      border-radius: 10px !important;
+  	}
+
+
+    .user {
+     width: 71%;
+     min-width: 350px;
+     height: 60px;
+     background-color: #fff;
+     position: relative;
+     border: 1px solid rgba(90,90,90, 0.2);
+     overflow: hidden;
+     padding: 10px;
+     color: #111;
+     margin: 0 auto;
+     cursor: pointer;
+   }
+
+
+   .user .image {
+     width: 45px;
+     height: 45px;
+     padding: 5px 0 0 0;
+     margin: 0;
+     border-radius: 50%;
+     float: left;
+   }
+
+
+   .user iron-image{
+     --iron-image-width: 45px;
+     --iron-image-height: 45px;
+     border-radius: 50%;
+   }
+
+
+   .user .info {
+     margin-left:70px !important;
+     color: #111;
+     font-size: 16px !important;
+     width: 50%;
+   }
+
+
+   .user .followers {
+      font-size: 11px;
+   }
+
+
+   .user iron-icon{
+     float: right;
+     position: relative;
+     bottom: 28px;
+     right: 10px;
+     color: red;
+   }
+
+
+  /* MEDIA QUERIES */
+
+
+  @media only screen and (min-width: 900px) {
+      paper-search-panel {
+        width: 67% !important;
+        margin: 0 10%;
+      }
+
+
+      .user {
+        width: 65% !important;
+        margin: 0 10%;
+
+      }
+
+  }
+
+   @media only screen and (max-width: 900px) {
+
+      #rightMenu {
+        display: none;
+      }
+
+  }
+
+
+
+
+  #progress {
+   
+	position: absolute;
+	top: 0;
+	right: 0px;
+	 width: 2050px !important;
+	 height: 3px;
+    //display: none;
+	--paper-progress-active-color: #448AFF;
+  }
+
+  </style>
+	
+  <paper-progress id="progress" indeterminate></paper-progress>
+
+  <div class="card">
+
+    
+	
+
+    <!-- Fetching API data -->
+  	<iron-ajax
+          auto
+  		  id="ajax"
+          url="https://api.github.com/users/burczu/repos"
+		  loading="{{loading}}"
+          handle-as="json"
+          last-response="{{ajaxResponse}}">
+    </iron-ajax>
+
+  	<paper-search-panel search="{{search}}"></paper-search-panel> <!-- Calls observer method renderTemplate each time value is changed-->
+
+    <br/><br/>
+
+    <!-- Rendering data from the API -->
+
+    <template id="temp" is="dom-repeat" items="{{ajaxResponse}}" as="item" filter="checkWord" ><!-- Filter data on input in search bar-->
+
+      <!-- Filtering the data on choosing one of the options in filter menu -->
+	  
+	  
+  			<template is="dom-if" if="{{filterList(item)}}">
+
+  			  <div class="user" on-click="toUserView"> <!-- Show selected user at userview page -->
+
+  					<div class="image"><iron-image src="homer.jpg"></iron-image> </div>
+
+  					<div class="info">
+    					<span class="username">{{item.name}}</span><br/>
+    					<span class="followers">200 followers</span>
+  				  </div>
+
+            <!-- Check if rendered data fullfil some extra condition-->
+    				<template is="dom-if" if="{{checkIf(item)}}">
+    					<iron-icon icon="warning"></iron-icon>
+    				</template>
+
+
+
+  			  </div>
+
+  		 </template>
+	
+
+  	</template>
+
+
+    <!-- Filter menu -->
+  	<div id="rightMenu">
+  			<p id="filter" >Filter: </p>
+  			<p id="mostPopular" on-click="includeFilter">Most Popular </p>
+  			<p id="newest" on-click="includeFilter">Newest </p>
+  			<p id="reported" on-click="includeFilter">Reported </p>
+  			<p id="incomplete" on-click="includeFilter">Incomplete </p>
+  	</div>
+
+   </div>
+
+  </template>
+
+  <script>
+
+    class MyUsers extends Polymer.Element {
+
+      static get is() { return 'my-users';}
+
+	    static get properties() {
+        return {
+          search: {
+            type: String,
+			      observer: 'renderTemplate'
+          },
+          searchFilter: {
+                type: Boolean,
+                value: false
+          },
+          mostPopularSelected: {
+                type:  Boolean,
+                value: false
+          },
+          newestSelected: {
+                type:  Boolean,
+                value: false
+          },
+          reportedSelected: {
+                type:  Boolean,
+                value: false
+          },
+
+          incompleteSelected: {
+                type:  Boolean,
+                value: false
+          },
+		  loading: {
+			observer: 'stopLoading'
+		  }
+		
+        };
+      }
+	  
+	  ready(){
+		super.ready();
+		if(this.loading == true){
+			this.$.progress.style="display: block;";
+		}else {
+			this.$.progress.style="display: none;";
+		}
+	  }
+	  
+	  
+	  
+	  stopLoading(){
+		console.log(this.loading);
+		if(this.loading == false){
+			this.$.progress.style="display: none;";
+		}
+	  }
+
+
+      checkIf(item){
+        if(parseInt(item.id) < 50300000){
+            return true;
+        }else return false;
+      }
+
+    
+      
+
+
+  	  toUserView(){
+  		   location.href="userview";
+  	  }
+
+      includeFilter(event){
+
+  		    this.search = "";
+
+          if(event.target.id == "mostPopular" && this.mostPopularSelected == false){
+              this.$.mostPopular.style="color:#1E88E5"; this.mostPopularSelected = true;
+              this.$.newest.style="color:#444"; this.newestSelected = false;
+              this.$.reported.style="color:#444"; this.reportedSelected = false;
+              this.$.incomplete.style="color:#444"; this.incompleteSelected = false;
+  			      this.$.ajax.generateRequest();
+
+      	  }else if(event.target.id == "mostPopular" && this.mostPopularSelected == true){
+              this.$.mostPopular.style="color: #444"; this.mostPopularSelected = false;
+              this.$.ajax.generateRequest();
+      	  }else if(event.target.id == "newest" && this.newestSelected == false){
+              this.$.newest.style="color: #1E88E5"; this.newestSelected = true;
+              this.$.mostPopular.style="color:#444"; this.mostPopularSelected = false;
+              this.$.reported.style="color:#444"; this.reportedSelected = false;
+              this.$.incomplete.style="color:#444"; this.incompleteSelected = false;
+              this.$.ajax.generateRequest();
+      	  }else if(event.target.id == "newest" && this.newestSelected == true){
+              this.$.newest.style="color: #444"; this.newestSelected = false;
+              this.$.ajax.generateRequest();
+      	  }else if(event.target.id == "reported" && this.reportedSelected == false){
+              this.$.reported.style="color: #1E88E5"; this.reportedSelected = true;
+              this.$.newest.style="color:#444"; this.newestSelected = false;
+              this.$.mostPopular.style="color:#444"; this.mostPopularSelected = false;
+              this.$.incomplete.style="color:#444"; this.incompleteSelected = false;
+              this.$.ajax.generateRequest();
+      	  }else if(event.target.id == "reported" && this.reportedSelected == true){
+              this.$.reported.style="color: #444"; this.reportedSelected = false;
+              this.$.ajax.generateRequest();
+      	  }else if(event.target.id == "incomplete" && this.incompleteSelected == false){
+              this.$.incomplete.style="color: #1E88E5"; this.incompleteSelected = true;
+              this.$.newest.style="color:#444"; this.newestSelected = false;
+              this.$.reported.style="color:#444"; this.reportedSelected = false;
+              this.$.mostPopular.style="color:#444"; this.mostPopularSelected = false;
+              this.$.ajax.generateRequest();
+      	  }else if(event.target.id == "incomplete" && this.incompleteSelected == true){
+              this.$.incomplete.style="color: #444"; this.incompleteSelected = false;
+              this.$.ajax.generateRequest();
+      	  }
+  	  }
+
+  	  renderTemplate(){
+  		    this.$.temp.render();
+  	  }
+
+	    filterList(item){
+
+        if(this.mostPopularSelected == true){
+          var re = new RegExp("Angular", 'i');
+          if(item.name.search(re) != -1 ){
+          return item;
+          }
+          else return;
+    	  }else if(this.newestSelected == true){
+          var re = new RegExp("react", 'i');
+          if(item.name.search(re) != -1 ){
+          return item;
+          }
+          else return;
+    	  }else if(this.reportedSelected == true){
+          var re = new RegExp("polymer", 'i');
+          if(item.name.search(re) != -1 ){
+          return item;
+          }
+          else return;
+    	  }else if(this.incompleteSelected == true){
+          var re = new RegExp("Crop", 'i');
+          if(item.name.search(re) != -1 ){
+          return item;
+          }
+          else return;
+    	  }else return item;
+	  }
+
+
+	  checkWord(item){
+  		var re = new RegExp(this.search, 'i');
+  		if(item.name.search(re) != -1 ){
+  		    return true;
+  		}
+  		else {
+			    return false;
+		  }
+	  }
+
+	  json(obj) {
+      return JSON.stringify(obj, null, 2);
+      }
+    }
+
+    window.customElements.define(MyUsers.is, MyUsers);
+  </script>
+</dom-module>

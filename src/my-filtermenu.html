@@ -1,0 +1,79 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+
+
+<dom-module id="my-filtermenu">
+
+  <template>
+
+    <style>
+
+    :host {
+          display: block;
+          padding: 10px;
+    }
+
+
+    #rightMenu {
+  		width: 10%;
+  		min-width: 150px !important;
+  		height: 100%;
+  		min-height: 700px;
+  		padding-top: 20px;
+  		//outline: 1px solid green;
+  		background-color: #FAFAFA;
+  		color: #444;
+  		position: fixed;
+  		top: 52px;
+  		right: 0;
+  		box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+  	}
+
+
+  	#rightMenu p {
+  		text-indent: 5%;
+  		padding: 5px;
+  		margin: 0;
+  	}
+
+    #filter {
+  		font-size: 14px;
+  	}
+
+
+    @media only screen and (max-width: 900px) {
+
+        #rightMenu {
+          display: none;
+        }
+
+    }
+
+
+    </style>
+
+
+    <div id="rightMenu">
+     <p id="filter">Filter: </p>
+     <p id="mostPopular">Most Popular </p>
+     <p id="newest">Newest </p>
+     <p id="reported">Reported </p>
+     <p id="incomplete">Incomplete </p>
+   </div>
+
+
+  </template>
+
+  <script>
+
+
+    class MyFiltermenu extends Polymer.Element {
+
+      static get is() { return 'my-filtermenu'; }
+
+      
+
+    }
+
+    window.customElements.define(MyFiltermenu.is, MyFiltermenu);
+  </script>
+</dom-module>

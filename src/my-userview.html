@@ -1,0 +1,773 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/paper-card-master/paper-card.html">
+<link rel="import" href="../bower_components/paper-toggle-button/paper-toggle-button.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-input/paper-textarea.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-search/paper-search.html">
+<link rel="import" href="../bower_components/social-media-icons/social-media-icons.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/paper-progress/paper-progress.html">
+
+
+
+
+<dom-module id="my-userview">
+  <template>
+    <style>
+
+    :host {
+        display: block;
+
+        padding: 10px;
+    }
+
+    html {
+  overflow: scroll;
+  overflow-x: hidden;
+}
+::-webkit-scrollbar {
+    display: none;
+}
+
+	  .card {
+		width: 96%;
+		//outline: 1px solid green;
+		padding: 2%;
+		margin: 0;
+		background-color: transparent;
+	}
+
+	#firstContainer, #secondContainer {
+		position: relative;
+		left: 25%;
+    min-width: 410px !important;
+	}
+
+	#firstContainer {
+		width: 50%;
+		background-color: #fff;
+		//outline: 1px solid green;
+		min-height: 230px;
+		margin-bottom: 30px;
+		 box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+	}
+
+	paper-card {
+		border-bottom-right-radius: 5px;
+		border-bottom-left-radius: 5px;
+		width: 50%;
+	}
+
+	.card-content {
+		height: 60px;
+		min-height: 60px;
+		background-color: #536DFE;
+		border-bottom-right-radius: 5px;
+		border-bottom-left-radius: 5px;
+	}
+
+
+  .user{
+    width: 96%;
+    height: 60px;
+    max-height: 60px;
+    overflow: hidden;
+    padding: 0 0%;
+    margin: 0;
+  }
+
+  .userFirst {
+	color: #111;
+	//outline: 1px solid green;
+	padding: 10px;
+  }
+
+  .social {
+	width: 96%;
+	padding: 10px 2%;
+	height: 40px;
+	//outline: 1px solid blue;
+  }
+
+  #text {
+	width: 96%;
+	padding: 0px 1%;
+	//outline: 1px solid red;
+
+  }
+
+  #text paper-textarea{
+	width: 96%;
+	margin: 0 auto;
+	//outline: 1px solid blue;
+  }
+
+  #buttons {
+  	//outline: 1px dashed green;
+    margin-top: 5px;
+    padding: 0 2%;
+  }
+
+  .paperButtons {
+  	padding: 5px;
+    border-radius: 5px;
+    color: #fff;
+    height: 25px;
+  }
+
+  #patreon {
+	   background-color: #FF5722;
+     text-transform: uppercase;
+     font-size: 9px;
+     padding-left: 10px;
+  }
+
+  #pipe {
+     font-size: 14px;
+     padding: 0;
+     margin: 0;
+  }
+
+  #shop {
+	   background-color: #0277BD;
+     font-size: 16px;
+     position: relative;
+     top: 2px;
+     min-width: 60px !important;
+  }
+
+  #add {
+	   background-color: #fff;
+     font-size: 12px;
+     color: #111;
+     min-width: 20px !important;
+     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+  }
+
+  paper-toggle-button {
+  	display: inline-block;
+  	margin-left: 5px;
+  }
+
+  .iconToggle {
+  	display: inline-block;
+  	width:19%;
+  	margin: 0;
+  	padding: 0 0 0 5%;
+  	//outline: 1px solid red;
+  	vertical-align: top;
+  }
+
+  #toggleInstagram{
+  	--paper-toggle-button-checked-bar: {
+  		background-color: #FF9800;
+  	};
+  	--paper-toggle-button-checked-button-color: #FF9800;
+  }
+
+  #toggleYoutube{
+  	--paper-toggle-button-checked-bar: {
+  		background-color: #D84315;
+  	};
+  	--paper-toggle-button-checked-button-color: #D84315;
+  }
+
+  #toggleTwitter{
+  	--paper-toggle-button-checked-bar: {
+  		background-color: #64B5F6;
+  	};
+  	--paper-toggle-button-checked-button-color: #64B5F6;
+  }
+
+  .iconToggle .networkName {
+  	display: block;
+  	font-size: 10px;
+  }
+
+
+
+  #firstContainer paper-textarea {
+	width: 96%;
+	//outline: 1px solid green;
+	margin: 0 auto;
+
+  }
+
+
+
+  .user .image, .userFirst .image {
+  	width: 45px;
+  	height: 45px;
+  	padding: 0;
+  	margin: 0;
+  	border-radius: 50%;
+  	float: left;
+  }
+
+  .user iron-image, .userFirst iron-image{
+    --iron-image-width: 45px;
+    --iron-image-height: 45px;
+    border-radius: 50%;
+  }
+
+  .user .info {
+	margin-left:70px !important;
+	color: #fff;
+	font-size: 16px !important;
+  }
+
+
+
+  .userFirst .info {
+	margin-left:70px !important;
+	color: #111;
+	font-weight: bold;
+	font-size: 16px !important;
+  }
+
+  .user .followers {
+	font-size: 11px;
+	color: #ccc;
+	font-weight: normal;
+  }
+
+  .userFirst .followers {
+	font-size: 11px;
+	color: #666;
+	font-weight: normal;
+  }
+
+
+  #overlay  {
+    position: fixed; /* Sit on top of the page content */
+    display: none; /* Hidden by default */
+    width: 100%; /* Full width (cover the whole page) */
+    height: 100%; /* Full height (cover the whole page) */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #888; /* Black background with opacity */
+    z-index:2; /* Specify a stack order in case you're using a different order for other elements */
+    cursor: pointer; /* Add a pointer on hover */
+}
+
+  .modalWindows {
+    width: 45%;
+    min-width: 350px !important;
+    height: 430px;
+    position: fixed; /* Stay in place */
+    z-index: 5; /* Sit on top */
+    left: 27%;
+    top: 20%;
+    overflow: auto; /* Enable scroll if needed */
+    background-color: #fff;
+
+  }
+
+  #modalAdd, #modalChange {
+
+    display: none; /* Hidden by default */
+
+  }
+
+  #modalAdd .firstDiv, #modalChange .firstDiv{
+    //outline: 1px solid green;
+    width: 96%;
+    padding: 2% 2% 0 2%;
+    margin: 0;
+  }
+
+  #modalAdd span {
+    position: relative;
+    left: 10px;
+    bottom: 2px;
+  }
+
+
+
+  #modalAdd .networkName {
+    display: inline;
+	   padding-left: 10px;
+  }
+
+   #modalChange .networkName {
+	padding-left: 10px;
+  }
+
+  #modalChange .user {
+	width: 96%;
+	margin: 0 auto;
+	padding: 2% 0;
+
+  }
+
+  #modalAdd paper-search-panel{
+	width: 98%;
+    position: relative;
+    right: 10px;
+    bottom: 8px;
+    padding: 0 !important;
+    margin: 0 auto !important;
+	}
+
+  #modalChange paper-search-panel {
+	  width: 98%;
+    position: relative;
+    right: 10px;
+    bottom:22px;
+    padding: 0 !important;
+    margin: 0 auto !important;
+	//outline: 1px solid red;
+	}
+
+  #modalAdd .bottomLine, #modalChange .bottomLine {
+    width: 96%;
+    height: 1px;
+    margin: 0 auto !important;
+    background-color: #999;
+    position: relative;
+    bottom: 20px;
+  }
+
+   #modalChange .bottomLine {
+    position: relative;
+    bottom: 33px !important;
+  }
+
+  #modalAdd .modalButtons {
+    //outline: 1px solid red;
+    min-width: 110px;
+    width: 20%;
+    position: relative;
+    left: 75%;
+    top: 290px;
+    z-index: 20;
+    background-color: #fff;
+  }
+
+ #modalChange .modalButtons  {
+    //outline: 1px solid red;
+    min-width: 110px;
+    width: 20%;
+    position: relative;
+    left: 73%;
+    top: 200px;
+    z-index: 20;
+    background-color: #fff;
+  }
+
+  #modalAdd .modalButtons span, #modalChange .modalButtons span   {
+    color: #26A69A;
+    padding-right: 10px;
+    font-size: 13px;
+    cursor: pointer;
+    //float: right;
+  }
+
+  #modalAdd .followers, #modalChange .followers   {
+    color: #555;
+  }
+
+  #modalAdd .modalButtons span:hover, #modalChange .modalButtons span:hover   {
+    color: #00796B;
+  }
+
+  #modalAdd .info, #modalChange .info  {
+    color: #111;
+  }
+
+		#modalChange #deleteIcon {
+			position: relative;
+			bottom: 35px;
+			left: 90%;
+		}
+
+  #modalAdd .results {
+    padding: 0 ;
+    width: 94%;
+    height: 290px;
+    max-height: 290px;
+    //overflow: auto;
+    overflow-y:scroll;
+    margin: 0 auto;
+    //outline: 1px solid blue;
+    position: relative;
+    bottom: 25px;
+    padding-left: 3px;
+  }
+
+
+
+  #modalAdd .results iron-image {
+    --iron-image-width: 45px;
+    --iron-image-height: 45px;
+    border-radius: 50%;
+    //outline: 1px solid red;
+  }
+
+  #modalAdd .info {
+    position: relative;
+    right: 20px;
+  }
+
+
+
+
+  @media only screen and (min-width: 900px) {
+
+      #modalAdd .modalButtons{
+        position: relative;
+        left: 72% !important;
+      }
+
+      #modalAdd {
+        //position: relative;
+        left: 35% !important;
+      }
+
+      #modalChange .modalButtons{
+        position: relative;
+        left: 72% !important;
+      }
+
+      #modalChange {
+        //position: relative;
+        left: 35% !important;
+      }
+    }
+
+
+
+  @media only screen and (max-width: 500px) {
+
+      .modalWindows {
+        position: relative;
+        left: 11% !important;
+      }
+    }
+
+    @media only screen and (min-width: 640px) and (max-width: 900px) {
+
+        .modalWindows {
+          position: fixed;
+          left: 35% !important;
+
+        }
+
+        #modalAdd .modalButtons  {
+
+           position: relative;
+           left: 62% !important;
+
+         }
+
+         #modalChange .modalButtons  {
+            position: relative;
+            left: 65% !important;
+            top: 210px;
+          }
+      }
+
+
+
+    @media only screen and (max-width: 640px) {
+
+        .card {
+          width: 100%;
+          padding: 0;
+          margin: 0 auto;
+          background-color: transparent;
+        }
+
+        .modalWindows {
+          width: 70%;
+          height: 430px;
+          position: fixed; /* Stay in place */
+          z-index: 5; /* Sit on top */
+          left: 15%;
+          top: 20%;
+          overflow: auto; /* Enable scroll if needed */
+          background-color: #fff;
+        }
+
+        #modalAdd .modalButtons  {
+
+           position: relative;
+           left: 66% !important;
+           top: 290px;
+
+         }
+
+         #modalChange .modalButtons  {
+            position: relative;
+            left: 66% !important;
+            top: 210px;
+          }
+
+
+
+        #firstContainer{
+            width: 70%;
+            margin: 0 auto 0 auto;
+            min-width: 410px !important;
+            position: absolute;
+            left: 15%;
+        }
+
+        paper-card {
+          width: 70%;
+          margin: 0 auto 0 auto;
+          min-width: 410px !important;
+          position: absolute !important;
+          left: 15% !important;
+          top: 260px;
+        }
+
+
+
+
+    }
+
+    @media only screen and (max-width: 550px) {
+
+
+
+          #firstContainer{
+
+            position: absolute;
+            left: 10%;
+          }
+
+
+
+        paper-card {
+
+          position: absolute !important;
+          left: 10% !important;
+
+        }
+
+    }
+
+    @media only screen and (max-width: 500px) {
+
+
+
+          #firstContainer{
+
+            position: absolute;
+            left: 5%;
+          }
+
+
+
+        paper-card {
+
+          position: absolute !important;
+          left: 5% !important;
+
+        }
+
+    }
+	
+	/* #progress {
+		position: absolute;
+		top: 0;
+		right: 0px;
+		width: 100%;
+		 height: 3px;
+		//display: none;
+		--paper-progress-active-color: #448AFF;
+	  }*/
+
+
+
+
+
+
+
+
+    </style>
+
+    <div class="card">
+	
+		<!--<button on-click="overlayCalled">Open overlay</button>-->
+
+		<div id="firstContainer">
+
+			<div class="userFirst">
+				<div class="image"><iron-image src="homer.jpg"></iron-image> </div>
+				<div class="info"><span class="username">Name </span><br/>
+				<span class="followers">200 followers</span></div>
+			</div>
+
+			<div class="social">
+				<div class="iconToggle"><social-media-icons icon="facebook" color="#3F51B5" size="22"></social-media-icons><paper-toggle-button id="toggleFacebook" on-click="openModal"></paper-toggle-button ><span class="networkName">Facebook Name</span></div>
+				<div class="iconToggle"><social-media-icons icon="instagram" color="#FF9800" size="22"></social-media-icons><paper-toggle-button id="toggleInstagram"></paper-toggle-button><span class="networkName">Instagram Name</span></div>
+				<div class="iconToggle"><social-media-icons icon="youtube" color="#D84315" size="22"></social-media-icons><paper-toggle-button id="toggleYoutube"></paper-toggle-button><span class="networkName">Youtube Name</span></div>
+				<div class="iconToggle"><social-media-icons icon="twitter" color="#64B5F6" size="22"></social-media-icons><paper-toggle-button id="toggleTwitter"></paper-toggle-button><span class="networkName">Twitter Name</span></div>
+
+				<!--<paper-textarea value="Lorem ipsum"></paper-textarea> -->
+			</div>
+			<div id="text">
+				<paper-textarea value="Lorem ipsum..."></paper-textarea>
+			</div>
+      <div id="buttons">
+        <paper-button class="paperButtons" id="patreon" on-tap="openModal2">Patreon <span id="pipe"></span></paper-button>
+        <paper-button class="paperButtons" id="shop">Shop</paper-button>
+        <paper-button class="paperButtons" id="add">+</paper-button>
+      </div>
+
+		</div>
+
+
+		<paper-card id="secondContainer" image="homer.jpg">
+
+		  <div class="card-content">
+
+				<div class="user">
+					<div class="image"><iron-image src="homer.jpg"></iron-image> </div>
+					<div class="info"><span class="username">Name </span><br/>
+					<span class="followers">200 followers</span></div>
+				</div>
+
+		  </div>
+
+		</paper-card>
+
+
+
+	<div id="overlay"></div>
+
+
+  <iron-ajax
+                  auto
+				  id="ajax"
+                  url="https://api.github.com/users/burczu/repos"
+                  handle-as="json"
+                  last-response="{{ajaxResponse}}">
+      </iron-ajax>
+
+  <div id="modalAdd" class="modalWindows">
+  <!--<paper-progress id="progress" indeterminate></paper-progress> -->
+    <div class="firstDiv"><social-media-icons icon="facebook" color="#3F51B5" size="18"></social-media-icons><span class="networkName">Add Account</span></div>
+    <paper-search-panel
+  	  search="{{searchModalAdd}}"
+  	  on-input="updateModalAdd">
+  	</paper-search-panel>
+    <div class="bottomLine"></div>
+    <div class="modalButtons">
+      <span on-tap="cancelModal">CANCEL</span>
+      <span>DONE</span>
+    </div>
+    <div class="results">
+      <template id="tempModalAdd" is="dom-repeat" items="{{ajaxResponse}}" as="item" filter="checkWord">
+       <div class="user">
+         <div class="image"><iron-image src="homer.jpg"></iron-image> </div>
+         <div class="info">
+         <span class="username">{{item.name}}</span><br/>
+         <span class="followers">200 followers</span>
+         </div>
+       </div>
+
+     </template>
+    </div>
+  </div>
+
+  <div id="modalChange" class="modalWindows">
+	<div class="firstDiv"><social-media-icons icon="facebook" color="#3F51B5" size="18"></social-media-icons><span class="networkName">Change Facebook</span></div>
+			<div class="user">
+					<div class="image"><iron-image src="homer.jpg"></iron-image> </div>
+					<div class="info"><span class="username">Name trgtrere </span><br/>
+					<span class="followers">3.2k likes</span></div>
+					<iron-icon id="deleteIcon" icon="delete"></iron-icon>
+				</div>
+
+	<paper-search-panel
+  	  search="{{d}}"
+  	  on-input="">
+  	</paper-search-panel>
+    <div class="bottomLine"></div>
+    <div class="modalButtons">
+      <span on-tap="cancelModal">CANCEL</span>
+      <span>DONE</span>
+    </div>
+
+  </div>
+
+   </div>
+  </template>
+
+  <script>
+    class MyUserview extends Polymer.Element {
+      static get is() { return 'my-userview'; }
+
+      static get properties() {
+         return {
+           searchModalAdd: {
+             type: String
+           }
+         };
+       }
+
+	  openModal(){
+  	  console.log("inside");
+      //var temp = document.querySelector("#overlayApp");
+  		this.$.overlay.style="display: block;";
+      this.$.modalAdd.style="display: block;";
+	  }
+
+	  openModal2(){
+  	  console.log("inside");
+      //var temp = document.querySelector("#overlayApp");
+  		this.$.overlay.style="display: block;";
+      this.$.modalChange.style="display: block;";
+	  }
+	  
+	  overlayCalled(){
+		this.dispatchEvent(new CustomEvent('button-clicked'));
+	  }
+
+    json(obj) {
+      return JSON.stringify(obj, null, 2);
+    }
+
+    updateModalAdd(){
+        this.$.tempModalAdd.render();
+    }
+
+    cancelModal(){
+      this.$.overlay.style="display: none;";
+      this.$.modalAdd.style="display: none;";
+	  this.$.modalChange.style="display: none;";
+    }
+
+    checkWord(item){
+  		var re = new RegExp(this.searchModalAdd, 'i');
+
+  		if(item.name.search(re) != -1 ){
+  		    return item;
+  		}
+  		else return;
+	  }
+
+
+    }
+
+    window.customElements.define(MyUserview.is, MyUserview);
+  </script>
+</dom-module>
