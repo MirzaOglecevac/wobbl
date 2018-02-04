@@ -584,16 +584,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     }
 	
-	/* #progress {
+	 
+	 #progress {
 		position: absolute;
 		top: 0;
 		right: 0px;
-		width: 100%;
+		 width: 2050px !important;
 		 height: 3px;
 		//display: none;
 		--paper-progress-active-color: #448AFF;
-	  }*/
-
+	  }
 
 
 
@@ -603,10 +603,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     </style>
 
+	<paper-progress id="progress" indeterminate></paper-progress>
     <div class="card">
 	
-		<!--<button on-click="overlayCalled">Open overlay</button>-->
-
+		
 		<div id="firstContainer">
 
 			<div class="userFirst">
@@ -621,7 +621,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 				<div class="iconToggle"><social-media-icons icon="youtube" color="#D84315" size="22"></social-media-icons><paper-toggle-button id="toggleYoutube"></paper-toggle-button><span class="networkName">Youtube Name</span></div>
 				<div class="iconToggle"><social-media-icons icon="twitter" color="#64B5F6" size="22"></social-media-icons><paper-toggle-button id="toggleTwitter"></paper-toggle-button><span class="networkName">Twitter Name</span></div>
 
-				<!--<paper-textarea value="Lorem ipsum"></paper-textarea> -->
+				
 			</div>
 			<div id="text">
 				<paper-textarea value="Lorem ipsum..."></paper-textarea>
@@ -658,12 +658,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   auto
 				  id="ajax"
                   url="https://api.github.com/users/burczu/repos"
+				  loading="{{loading}}"
                   handle-as="json"
                   last-response="{{ajaxResponse}}">
       </iron-ajax>
 
   <div id="modalAdd" class="modalWindows">
-  <!--<paper-progress id="progress" indeterminate></paper-progress> -->
     <div class="firstDiv"><social-media-icons icon="facebook" color="#3F51B5" size="18"></social-media-icons><span class="networkName">Add Account</span></div>
     <paper-search-panel
   	  search="{{searchModalAdd}}"
@@ -720,9 +720,30 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
          return {
            searchModalAdd: {
              type: String
-           }
+           },
+		   loading: {
+			observer: 'stopLoading'
+		  }
          };
        }
+	   
+	   ready(){
+		super.ready();
+		if(this.loading == true){
+			this.$.progress.style="display: block;";
+		}else {
+			this.$.progress.style="display: none;";
+		}
+	  }
+	  
+	  
+	  
+	  stopLoading(){
+		console.log(this.loading);
+		if(this.loading == false){
+			this.$.progress.style="display: none;";
+		}
+	  }
 
 	  openModal(){
   	  console.log("inside");
@@ -741,6 +762,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 	  overlayCalled(){
 		this.dispatchEvent(new CustomEvent('button-clicked'));
 	  }
+	  
+	  
 
     json(obj) {
       return JSON.stringify(obj, null, 2);
